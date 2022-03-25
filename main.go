@@ -132,7 +132,15 @@ func sendWebhook(amo *alertManOut) {
 		DO.Embeds = []discordEmbed{RichEmbed}
 
 		DOD, _ := json.Marshal(DO)
-		http.Post(*whURL, "application/json", bytes.NewReader(DOD))
+		res, err := http.Post(*whURL, "application/json", bytes.NewReader(DOD))
+		if err != nil {
+			log.Printf("Failed to send to webhook: %s", err)
+		} else {
+			log.Print("Sent to webhook")
+		}
+		if res != nil {
+			res.Body.Close()
+		}
 	}
 }
 
