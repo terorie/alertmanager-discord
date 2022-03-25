@@ -122,10 +122,14 @@ func sendWebhook(amo *alertManOut) {
 			if strings.Contains(realname, "localhost") && alert.Labels["exported_instance"] != "" {
 				realname = alert.Labels["exported_instance"]
 			}
+			field := alert.Annotations.Description
+			if field == "" {
+				field = "-" // Discord drops messages that have fields without values
+			}
 
 			RichEmbed.Fields = append(RichEmbed.Fields, discordEmbedField{
 				Name:  fmt.Sprintf("[%s]: %s on %s", strings.ToUpper(status), alert.Labels["alertname"], realname),
-				Value: alert.Annotations.Description,
+				Value: field,
 			})
 		}
 
